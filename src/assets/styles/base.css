@@ -1,0 +1,16 @@
+/* 提供全局重置、基础排版和 Element Plus 的跨组件外观调整。 */
+* { box-sizing: border-box; }
+html { background: var(--app-bg); }
+body { margin: 0; min-width: 320px; min-height: 100vh; color: var(--text-primary); background: var(--app-bg); font-family: var(--el-font-family); }
+button, input, select, textarea { font: inherit; }
+button { letter-spacing: 0; }
+h1, h2, h3, p { margin-top: 0; }
+svg { width: 18px; height: 18px; stroke-width: 1.8; }
+#app { min-height: 100vh; }
+.el-button svg { width: 16px; height: 16px; }
+.el-drawer { --el-drawer-padding-primary: 24px; }
+.el-drawer__header { margin-bottom: 4px; padding-bottom: 18px; border-bottom: 1px solid var(--border-soft); }
+.el-drawer__body { padding-top: 22px; }
+.el-table { --el-table-header-bg-color: #f7f8fa; --el-table-row-hover-bg-color: #faf6f6; }
+.el-table th.el-table__cell { color: var(--text-secondary); font-size: 12px; font-weight: 600; }
+.el-table td.el-table__cell { color: #3b414a; }

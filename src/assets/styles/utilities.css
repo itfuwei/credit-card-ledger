@@ -1,0 +1,7 @@
+/* 提供页面组合时可复用的少量布局和金额显示工具样式。 */
+.page-section { margin-top: 28px; }
+.section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 13px; }
+.section-heading h2 { margin-bottom: 0; font-size: 17px; letter-spacing: 0; }
+.section-heading p { margin: 4px 0 0; color: var(--text-muted); font-size: 12px; }
+.money { font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) { .section-heading { align-items: flex-start; } }

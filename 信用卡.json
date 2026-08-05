@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "type": "cards",
+  "data": [
+    {
+      "bank": "农业银行",
+      "name": "京东联名白金卡",
+      "last4": "1159",
+      "limitFen": 48000,
+      "statementDay": 28,
+      "paymentDay": 16,
+      "color": "",
+      "status": "",
+      "hasCheckIn": true,
+      "pointsRating": "good"
+    },
+    {
+      "bank": "招商银行",
+      "name": "金卡",
+      "last4": "1885",
+      "limitFen": 30000,
+      "statementDay": 25,
+      "paymentDay": 13,
+      "pointsRating": "poor"
+    },
+    {
+      "bank": "华夏银行",
+      "name": "瑞幸联名白金卡",
+      "last4": "7354",
+      "limitFen": 15000,
+      "statementDay": 26,
+      "paymentDay": 15,
+      "color": "",
+      "status": "",
+      "hasCheckIn": true,
+      "pointsRating": "poor"
+    },
+    {
+      "bank": "交通银行",
+      "name": "美国运通卡",
+      "last4": "5291",
+      "limitFen": "22000",
+      "statementDay": "24",
+      "paymentDay": "18",
+      "color": "",
+      "status": "",
+      "hasCheckIn": true,
+      "pointsRating": "good"
+    },
+    {
+      "bank": "平安银行",
+      "name": "普卡",
+      "last4": "2216",
+      "limitFen": "21000",
+      "statementDay": "23",
+      "paymentDay": "11",
+      "color": "",
+      "status": "",
+      "hasCheckIn": true,
+      "pointsRating": "good"
+    },
+    {
+      "bank": "广发银行",
+      "name": "京东联名金卡",
+      "last4": "6255",
+      "limitFen": "21000",
+      "statementDay": "15",
+      "paymentDay": "4",
+      "color": "",
+      "status": "",
+      "hasCheckIn": false,
+      "pointsRedemptionPath": "发现精彩=》我的=》积分=》下拉=》积分分分有着落",
+      "pointsRating": "average"
+    },
+    {
+      "bank": "中信银行",
+      "name": "金卡",
+      "last4": "9164",
+      "limitFen": "46500",
+      "statementDay": "17",
+      "paymentDay": "5",
+      "color": "",
+      "status": "",
+      "hasCheckIn": false,
+      "pointsRating": "good"
+    },
+    {
+      "bank": "中国银行",
+      "name": "普卡",
+      "last4": "1715",
+      "limitFen": "24000",
+      "statementDay": "18",
+      "paymentDay": "7",
+      "color": "",
+      "status": "",
+      "hasCheckIn": false,
+      "pointsRedemptionPath": "中国银行=》我的=》我的福气值（福气值就是积分）",
+      "pointsRating": "good"
+    },
+    {
+      "bank": "浦发银行",
+      "name": "京东联名金卡",
+      "last4": "3569",
+      "limitFen": "24000",
+      "statementDay": "26",
+      "paymentDay": "15",
+      "color": "",
+      "status": "",
+      "hasCheckIn": true,
+      "pointsRating": "poor"
+    },
+    {
+      "bank": "光大银行",
+      "name": "阳光惠生活-金卡",
+      "last4": "3664",
+      "limitFen": "82000",
+      "statementDay": "1",
+      "paymentDay": "20",
+      "color": "",
+      "status": "",
+      "hasCheckIn": false,
+      "pointsRating": "good"
+    }
+  ]
+}

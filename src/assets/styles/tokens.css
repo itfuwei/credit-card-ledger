@@ -1,0 +1,31 @@
+/* 定义应用与 Element Plus 共用的颜色、圆角、字体和主题变量。 */
+:root {
+  color-scheme: light;
+  --app-bg: #f4f5f7;
+  --surface: #ffffff;
+  --surface-subtle: #f8f9fa;
+  --sidebar: #171b22;
+  --sidebar-hover: #292e37;
+  --text-primary: #22262d;
+  --text-secondary: #6f7782;
+  --text-muted: #969da6;
+  --border: #e0e3e8;
+  --border-soft: #eceef1;
+  --brand: #c84349;
+  --brand-hover: #b5373d;
+  --warning: #a95c16;
+  --success: #287a4e;
+  --radius: 6px;
+  --shadow-dialog: 0 24px 80px rgba(17, 22, 29, 0.22);
+
+  --el-color-primary: var(--brand);
+  --el-color-primary-light-3: #d96e73;
+  --el-color-primary-light-5: #e59a9d;
+  --el-color-primary-light-7: #f0c4c6;
+  --el-color-primary-light-9: #faeeee;
+  --el-color-primary-dark-2: var(--brand-hover);
+  --el-border-radius-base: var(--radius);
+  --el-border-color: var(--border);
+  --el-fill-color-light: var(--surface-subtle);
+  --el-font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
