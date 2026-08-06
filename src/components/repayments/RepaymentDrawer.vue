@@ -31,7 +31,7 @@ async function submit() {
 </script>
 
 <template>
-  <el-drawer :model-value="modelValue" title="记录还款" :size="drawerSize" destroy-on-close @close="emit('update:modelValue', false)">
+  <el-drawer :model-value="modelValue" title="记录还款" :size="drawerSize" :close-on-press-escape="false" destroy-on-close @close="emit('update:modelValue', false)">
     <p class="drawer-description">还款会优先冲减这张卡最早到期的已出账账期；当前不自动分配到未出账金额。</p>
     <el-form ref="formRef" :model="form" :rules="rules" label-position="top" @submit.prevent="submit">
       <el-form-item label="信用卡" prop="cardId"><el-select v-model="form.cardId" style="width:100%"><el-option v-for="card in cards.filter((item) => item.status === 'active')" :key="card.id" :label="`${card.bank} · ${card.name} ${card.last4}`" :value="card.id" /></el-select></el-form-item>

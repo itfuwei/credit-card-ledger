@@ -4,9 +4,10 @@ import { toSnakeCase, toCamelCase } from '../utils/caseConvert'
 import { resolveCardColor } from '../domain/cardAppearance.js'
 
 // 从 Supabase 响应中提取数据，遇到错误时抛出异常。
-function unwrap(result) {
-  if (result.error) throw result.error
-  return result.data
+async function unwrap(result) {
+  const resolved = await result
+  if (resolved.error) throw resolved.error
+  return resolved.data
 }
 
 // 加载当前用户的全部账本数据，并行查询 5 张表。
@@ -18,15 +19,39 @@ async function loadAll() {
     supabase.from('activities').select('*').order('created_at', { ascending: true }),
   ])
 
-  const cards = toCamelCase(unwrap(cardsRes) || [])
-  const transactions = toCamelCase(unwrap(transactionsRes) || [])
-  const repayments = toCamelCase(unwrap(repaymentsRes) || [])
-  const activities = toCamelCase(unwrap(activitiesRes) || [])
+  const cards = toCamelCase((await unwrap(cardsRes)) || [])
+  const transactions = toCamelCase((await unwrap(transactionsRes)) || [])
+  const repayments = toCamelCase((await unwrap(repaymentsRes)) || [])
+  const activities = toCamelCase((await unwrap(activitiesRes)) || [])
 
   // 为每张卡片解析展示颜色，并确保 pointsProducts 字段存在。
   cards.forEach((card) => {
     card.color = resolveCardColor(card.bank, card.color)
     card.pointsProducts = card.pointsProducts || []
+  })
+
+  // 循环活动：将日期替换为当月1号至月末，已领取但不在本月则重置。
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = now.getMonth()
+  const lastDay = new Date(year, month + 1, 0).getDate()
+  const mm = String(month + 1).padStart(2, '0')
+  const monthStart = `${year}-${mm}-01`
+  const monthEnd = `${year}-${mm}-${String(lastDay).padStart(2, '0')}`
+  activities.forEach((activity) => {
+    if (activity.isRecurring) {
+      activity.startDate = monthStart
+      activity.endDate = monthEnd
+      activity.claimStartDate = monthStart
+      activity.claimEndDate = monthEnd
+      if (activity.claimed && activity.claimedAt) {
+        const claimed = new Date(activity.claimedAt)
+        if (claimed.getFullYear() !== year || claimed.getMonth() !== month) {
+          activity.claimed = false
+          activity.claimedAt = null
+        }
+      }
+    }
   })
 
   return { cards, transactions, repayments, activities }

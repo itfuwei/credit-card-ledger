@@ -6,16 +6,19 @@ import { ElMessage } from 'element-plus'
 import CardDirectory from '../components/cards/CardDirectory.vue'
 import CardDrawer from '../components/cards/CardDrawer.vue'
 import PointsProductsDrawer from '../components/cards/PointsProductsDrawer.vue'
+import ActivityDrawer from '../components/activities/ActivityDrawer.vue'
 import { useLedger } from '../composables/useLedger'
 import { prepareCardsForExport, validateCardImport } from '../domain/importData'
 import { downloadJson, readJsonUpload } from '../utils/jsonTransfer'
 
-const { cards, loading, createCard, updateCard, deleteCard, importCards } = useLedger()
+const { cards, loading, createCard, updateCard, deleteCard, importCards, createActivity } = useLedger()
 const emit = defineEmits(['create-transaction'])
 const drawerOpen = ref(false)
 const editingCard = ref(null)
 const productsCard = ref(null)
 const productsDrawerOpen = ref(false)
+const activityDrawerOpen = ref(false)
+const presetCardId = ref('')
 const uploadKey = ref(0)
 const activeCount = computed(() => cards.value.filter((item) => item.status === 'active').length)
 
@@ -24,6 +27,8 @@ function openEdit(card) { editingCard.value = card; drawerOpen.value = true }
 async function saveCard(payload) { if (editingCard.value) await updateCard(editingCard.value.id, payload); else await createCard(payload) }
 async function toggleStatus(card) { await updateCard(card.id, { ...card, status: card.status === 'active' ? 'inactive' : 'active' }) }
 function openProducts(card) { productsCard.value = card; productsDrawerOpen.value = true }
+function openCreateActivity(cardId) { presetCardId.value = cardId; activityDrawerOpen.value = true }
+async function saveActivity(payload) { await createActivity(payload) }
 async function saveProducts(cardId, pointsProducts) { await updateCard(cardId, { pointsProducts }) }
 function exportCards() { downloadJson('cards', prepareCardsForExport(cards.value)) }
 async function handleCardImport(uploadFile) {
@@ -38,9 +43,10 @@ async function handleCardImport(uploadFile) {
 <template>
   <section class="cards-intro"><div><p class="eyebrow">卡片档案</p><h2>管理你的信用卡</h2><p>维护额度、账单日和还款日，交易录入将自动使用这些规则。</p></div><el-space wrap><el-button @click="exportCards"><el-icon><Download /></el-icon>导出 JSON</el-button><el-upload :key="uploadKey" accept="application/json,.json" :auto-upload="false" :show-file-list="false" :on-change="handleCardImport"><el-button><el-icon><Upload /></el-icon>导入 JSON</el-button></el-upload><el-button type="primary" @click="openCreate"><el-icon><Plus /></el-icon>添加信用卡</el-button></el-space></section>
   <el-row class="summary-row" :gutter="12"><el-col :xs="24" :sm="12"><div class="summary-item"><span>已添加卡片</span><strong>{{ cards.length }} 张</strong></div></el-col><el-col :xs="24" :sm="12"><div class="summary-item"><span>当前启用</span><strong>{{ activeCount }} 张</strong></div></el-col></el-row>
-  <CardDirectory :cards="cards" :loading="loading" @edit="openEdit" @delete="deleteCard" @toggle-status="toggleStatus" @manage-products="openProducts" @create-transaction="emit('create-transaction', $event)" />
+  <CardDirectory :cards="cards" :loading="loading" @edit="openEdit" @delete="deleteCard" @toggle-status="toggleStatus" @manage-products="openProducts" @create-transaction="emit('create-transaction', $event)" @create-activity="openCreateActivity" />
   <CardDrawer v-model="drawerOpen" :card="editingCard" @submit="saveCard" />
   <PointsProductsDrawer v-model="productsDrawerOpen" :card="productsCard" :submit-handler="saveProducts" />
+  <ActivityDrawer v-model="activityDrawerOpen" :cards="cards" :preset-card-id="presetCardId" :submit-handler="saveActivity" />
 </template>
 
 <style scoped>

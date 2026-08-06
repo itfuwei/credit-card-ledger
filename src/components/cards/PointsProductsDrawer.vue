@@ -32,7 +32,7 @@ async function save() {
 </script>
 
 <template>
-  <el-drawer :model-value="modelValue" :title="title" :size="drawerSize" destroy-on-close @close="emit('update:modelValue', false)">
+  <el-drawer :model-value="modelValue" :title="title" :size="drawerSize" :close-on-press-escape="false" destroy-on-close @close="emit('update:modelValue', false)">
     <div class="drawer-heading"><p>管理值得兑换的商品，修改输入框内容即可编辑。</p><el-button type="primary" @click="addProduct"><el-icon><Plus /></el-icon>添加商品</el-button></div>
     <el-empty v-if="!products.length" :image-size="72" description="暂无商品，点击上方按钮添加" />
     <div v-for="(product, index) in products" :key="product.id" class="product-item">

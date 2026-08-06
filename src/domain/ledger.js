@@ -92,5 +92,10 @@ export function applyRepaymentsToPlans(plans, repayments, now = new Date()) {
       amount -= applied
     })
   })
-  return plans.map((plan) => ({ ...plan, paidFen: plan.amountFen - remaining.get(plan.id), outstandingFen: remaining.get(plan.id) }))
+  return plans.map((plan) => {
+    const outstandingFen = remaining.get(plan.id)
+    const paidFen = plan.amountFen - outstandingFen
+    const status = outstandingFen === 0 ? 'paid' : plan.status
+    return { ...plan, paidFen, outstandingFen, status }
+  })
 }

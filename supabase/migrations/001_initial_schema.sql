@@ -45,6 +45,7 @@ create table if not exists public.repayments (
   card_id uuid not null references public.cards(id) on delete restrict,
   date date not null,
   amount_fen bigint not null check (amount_fen >= 0),
+  note text,
   created_at timestamptz not null default now()
 );
 
@@ -66,6 +67,8 @@ create table if not exists public.activities (
   claim_end_date date,
   claimed boolean not null default false,
   claimed_at date,
+  claim_time time,
+  is_recurring boolean not null default false,
   created_at timestamptz not null default now()
 );
 

@@ -2,6 +2,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { Delete, Plus } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 import { useLedger } from '../composables/useLedger'
 import { formatMoneyFromFen } from '../domain/billing'
 import RepaymentDrawer from '../components/repayments/RepaymentDrawer.vue'
@@ -19,14 +20,25 @@ const upcomingCount = computed(() => visiblePlans.value.filter((plan) => plan.st
 const sortedRepayments = computed(() => repayments.value.slice().sort((left, right) => right.date.localeCompare(left.date) || right.createdAt.localeCompare(left.createdAt)))
 
 async function saveRepayment(payload) { await createRepayment(payload) }
+
+async function quickRepay(plan) {
+  const now = new Date()
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+  try {
+    await createRepayment({ cardId: plan.card.id, date: today, amountFen: plan.outstandingFen, note: '一键还款' })
+    ElMessage.success(`已还清 ${plan.card.bank} · ${plan.card.last4} 的 ${formatMoneyFromFen(plan.outstandingFen)}`)
+  } catch (e) {
+    ElMessage.error('一键还款失败，请重试')
+  }
+}
 </script>
 
 <template>
   <section class="page-heading"><div><p class="eyebrow">还款安排</p><h2>按账期查看待还计划</h2><p>系统仅将已出账交易纳入计划；未出账金额不视为当前待还。</p></div><el-button type="primary" @click="repaymentEntryOpen = true"><el-icon><Plus /></el-icon>记录还款</el-button></section>
-  <section class="filter-panel"><el-form :inline="true" label-position="top"><el-form-item label="信用卡"><el-select v-model="cardId" clearable placeholder="全部卡片"><el-option v-for="card in cards" :key="card.id" :label="`${card.bank} · ${card.last4}`" :value="card.id" /></el-select></el-form-item><el-form-item label="还款状态"><el-select v-model="status" clearable placeholder="全部状态"><el-option label="已逾期" value="overdue" /><el-option label="3 天内" value="urgent" /><el-option label="4-7 天内" value="upcoming" /><el-option label="计划中" value="planned" /></el-select></el-form-item></el-form></section>
+  <section class="filter-panel"><el-form :inline="true" label-position="top"><el-form-item label="信用卡"><el-select v-model="cardId" clearable placeholder="全部卡片"><el-option v-for="card in cards" :key="card.id" :label="`${card.bank} · ${card.last4}`" :value="card.id" /></el-select></el-form-item><el-form-item label="还款状态"><el-select v-model="status" clearable placeholder="全部状态"><el-option label="已还清" value="paid" /><el-option label="已逾期" value="overdue" /><el-option label="3 天内" value="urgent" /><el-option label="4-7 天内" value="upcoming" /><el-option label="计划中" value="planned" /></el-select></el-form-item></el-form></section>
   <el-row class="summary-row" :gutter="12"><el-col :xs="24" :sm="8"><div class="summary-item"><span>全部待还</span><strong>{{ formatMoneyFromFen(totalDueFen) }}</strong></div></el-col><el-col :xs="24" :sm="8"><div class="summary-item danger"><span>逾期及 3 天内</span><strong>{{ formatMoneyFromFen(urgentDueFen) }}</strong></div></el-col><el-col :xs="24" :sm="8"><div class="summary-item"><span>4-7 天内账期</span><strong>{{ upcomingCount }} 期</strong></div></el-col></el-row>
   <el-alert class="plan-note" title="还款自动按最早到期账期冲减" description="超出当前已出账金额的部分不会分配给未出账账期，但会从卡片当前占用中扣减。" type="info" :closable="false" show-icon />
-  <RepaymentPlanTable :plans="visiblePlans" :loading="loading" />
+  <RepaymentPlanTable :plans="visiblePlans" :loading="loading" @repay="quickRepay" />
   <section class="history-panel"><div class="history-heading"><div><h2>还款记录</h2><p>删除记录后，待还金额和额度占用会自动恢复。</p></div></div><el-table :data="sortedRepayments" empty-text="暂无还款记录"><el-table-column prop="date" label="还款日期" min-width="120" /><el-table-column label="信用卡" min-width="180"><template #default="{ row }"><span>{{ cards.find((card) => card.id === row.cardId)?.bank || '已删除卡片' }} · {{ cards.find((card) => card.id === row.cardId)?.last4 || '----' }}</span></template></el-table-column><el-table-column label="还款金额" min-width="135"><template #default="{ row }"><strong class="money">{{ formatMoneyFromFen(row.amountFen) }}</strong></template></el-table-column><el-table-column prop="note" label="备注" min-width="180" show-overflow-tooltip /><el-table-column label="操作" width="76" fixed="right"><template #default="{ row }"><el-popconfirm title="确定删除这笔还款记录吗？" confirm-button-text="删除" cancel-button-text="取消" @confirm="deleteRepayment(row.id)"><template #reference><el-button text type="danger" aria-label="删除还款记录"><el-icon><Delete /></el-icon></el-button></template></el-popconfirm></template></el-table-column></el-table></section>
   <RepaymentDrawer v-model="repaymentEntryOpen" :cards="cards" :submit-handler="saveRepayment" />
 </template>

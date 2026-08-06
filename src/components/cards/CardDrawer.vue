@@ -34,7 +34,7 @@ async function submit() {
 </script>
 
 <template>
-  <el-drawer :model-value="modelValue" :title="drawerTitle" :size="drawerSize" destroy-on-close @close="emit('update:modelValue', false)">
+  <el-drawer :model-value="modelValue" :title="drawerTitle" :size="drawerSize" :close-on-press-escape="false" destroy-on-close @close="emit('update:modelValue', false)">
     <p class="drawer-description">只保存银行、卡片名称和后四位，不要填写完整卡号或任何支付密码。</p>
     <el-form ref="formRef" :model="form" :rules="rules" label-position="top" @submit.prevent="submit">
       <div class="form-row"><el-form-item label="发卡银行" prop="bank"><el-input v-model="form.bank" maxlength="20" placeholder="例如：招商银行" /></el-form-item><el-form-item label="卡片名称" prop="name"><el-input v-model="form.name" maxlength="30" placeholder="例如：经典白金卡" /></el-form-item></div>

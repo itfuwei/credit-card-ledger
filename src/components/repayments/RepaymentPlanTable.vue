@@ -1,10 +1,13 @@
 <!-- 负责用表格展示按账期生成的待还计划，并明确区分逾期和临近状态。 -->
 <script setup>
 import { formatFullDate, formatMoneyFromFen } from '../../domain/billing'
+import { Wallet } from '@element-plus/icons-vue'
 
 defineProps({ plans: { type: Array, required: true }, loading: Boolean })
+const emit = defineEmits(['repay'])
 
 function statusMeta(plan) {
+  if (plan.status === 'paid') return { type: 'success', label: '已还清' }
   if (plan.status === 'overdue') return { type: 'danger', label: `逾期 ${Math.abs(plan.daysToPayment)} 天` }
   if (plan.status === 'urgent') return { type: 'danger', label: plan.daysToPayment === 0 ? '今日还款' : `${plan.daysToPayment} 天后还款` }
   if (plan.status === 'upcoming') return { type: 'warning', label: `${plan.daysToPayment} 天后还款` }
@@ -25,6 +28,7 @@ function statusMeta(plan) {
       <el-table-column label="待还金额" min-width="128"><template #default="{ row }"><strong class="money">{{ formatMoneyFromFen(row.outstandingFen) }}</strong></template></el-table-column>
       <el-table-column label="手续费" min-width="105"><template #default="{ row }">{{ formatMoneyFromFen(row.feeFen) }}</template></el-table-column>
       <el-table-column label="交易笔数" min-width="92"><template #default="{ row }">{{ row.transactionCount }} 笔</template></el-table-column>
+      <el-table-column label="操作" width="100" fixed="right"><template #default="{ row }"><el-button type="primary" size="small" :disabled="row.outstandingFen <= 0" @click="emit('repay', row)"><el-icon><Wallet /></el-icon>一键还款</el-button></template></el-table-column>
     </el-table>
   </section>
 </template>

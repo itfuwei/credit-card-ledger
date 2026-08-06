@@ -44,7 +44,7 @@ async function submit() {
 </script>
 
 <template>
-  <el-drawer :model-value="modelValue" :title="drawerTitle" :size="drawerSize" destroy-on-close @close="emit('update:modelValue', false)">
+  <el-drawer :model-value="modelValue" :title="drawerTitle" :size="drawerSize" :close-on-press-escape="false" destroy-on-close @close="emit('update:modelValue', false)">
     <p class="drawer-description">账单周期、预计出账日和还款日将自动计算。</p>
     <el-form ref="formRef" :model="form" :rules="rules" label-position="top" @submit.prevent="submit">
       <el-form-item label="信用卡" prop="cardId"><el-select v-model="form.cardId" :disabled="Boolean(fixedCardId)" style="width:100%"><el-option v-for="card in cards" :key="card.id" :disabled="card.status !== 'active' && card.id !== form.cardId" :label="`${card.bank} · ${card.name} ${card.last4}${card.status === 'active' ? '' : '（已停用）'}`" :value="card.id" /></el-select><div v-if="fixedCardId" class="fixed-card-hint">从卡片快捷入口打开，当前信用卡不可切换</div></el-form-item>
