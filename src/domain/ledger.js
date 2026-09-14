@@ -85,12 +85,17 @@ function formatLocalDate(date) { return `${date.getFullYear()}-${String(date.get
 export function applyRepaymentsToPlans(plans, repayments, now = new Date()) {
   const remaining = new Map(plans.map((plan) => [plan.id, plan.amountFen]))
   repayments.filter((item) => item.date <= formatLocalDate(now)).sort((a, b) => a.date.localeCompare(b.date)).forEach((repayment) => {
+    const [ry, rm, rd] = repayment.date.split('-').map(Number)
+    const repaymentDate = new Date(ry, rm - 1, rd)
     let amount = repayment.amountFen
-    plans.filter((plan) => plan.card.id === repayment.cardId).sort((a, b) => a.paymentDate - b.paymentDate).forEach((plan) => {
-      const applied = Math.min(amount, remaining.get(plan.id))
-      remaining.set(plan.id, remaining.get(plan.id) - applied)
-      amount -= applied
-    })
+    plans
+      .filter((plan) => plan.card.id === repayment.cardId && plan.statementDate <= repaymentDate)
+      .sort((a, b) => a.paymentDate - b.paymentDate)
+      .forEach((plan) => {
+        const applied = Math.min(amount, remaining.get(plan.id))
+        remaining.set(plan.id, remaining.get(plan.id) - applied)
+        amount -= applied
+      })
   })
   return plans.map((plan) => {
     const outstandingFen = remaining.get(plan.id)
