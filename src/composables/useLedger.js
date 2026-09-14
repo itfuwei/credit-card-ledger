@@ -1,7 +1,7 @@
 // 编排账本加载、派生状态和交易写入，供多个视图共享同一份前端状态。
 import { computed, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { applyRepaymentsToPlans, buildRepaymentPlans, enrichTransactions, summarizeCards, summarizeLedger } from '../domain/ledger'
+import { buildCardRepaymentPlans, enrichTransactions, summarizeCards, summarizeLedger } from '../domain/ledger'
 import { ledgerRepository } from '../repositories/ledgerRepository'
 
 const cards = ref([])
@@ -17,7 +17,7 @@ export function useLedger() {
   const cardRows = computed(() => summarizeCards(cards.value, transactions.value, repayments.value))
   const totals = computed(() => summarizeLedger(cardRows.value))
   const transactionRows = computed(() => enrichTransactions(transactions.value, cards.value))
-  const repaymentPlans = computed(() => applyRepaymentsToPlans(buildRepaymentPlans(cards.value, transactions.value), repayments.value))
+  const repaymentPlans = computed(() => buildCardRepaymentPlans(cards.value, transactions.value, repayments.value))
 
   // 登录成功后调用，从 Supabase 加载当前用户的全部数据。
   async function loadLedgerData() {
